@@ -12,7 +12,7 @@ services:
   web:
     build: .
     ports:
-      - "8000:80"
+      - "8000:8000"
     volumes:
       - ./server:/cryptotracker4/server
       - ./web:/cryptotracker4/web
