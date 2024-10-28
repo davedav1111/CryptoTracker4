@@ -5,7 +5,7 @@ When you're ready, start your application by running:
 
 Your application will be available at <http://localhost:8000>.
 
-Documentation for FastAPI will be available at <http://localhost:8000/docs>.
+Documentation for API will be available at <http://localhost:8000/docs>.
 
 ## Deploying your application to the cloud
 
