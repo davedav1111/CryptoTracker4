@@ -1,19 +1,13 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from server import crud, schemas
-from .database import SessionLocal
+from server import crud, schemas, auth, database
+from fastapi.security import OAuth2PasswordRequestForm
+from .database import get_db
 import requests
+from datetime import timedelta
 
 # Instantiate FastAPI
 app = FastAPI()
-
-# Dependency: Get database session
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 # User Registration Route
 @app.post("/users/", response_model=schemas.UserOut)
@@ -25,26 +19,40 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     # Create new user if not already registered
     return crud.create_user(db=db, user=user)
 
-# Get Cryptocurrency Price and Save to Database
+@app.post("/token", response_model=schemas.Token)
+def login_for_access_token(db: Session = Depends(database.get_db), form_data: OAuth2PasswordRequestForm = Depends()):
+    user = auth.authenticate_user(db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token_expires = timedelta(minutes=auth.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = auth.create_access_token(
+        data={"sub": user.email}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.get("/users/me", response_model=schemas.UserOut)
+def read_users_me(current_user: schemas.UserOut = Depends(auth.get_current_user)):
+    return current_user
+
+@app.get("/admin", response_model=schemas.UserOut)
+def read_admin_data(current_user: schemas.UserOut = Depends(auth.get_current_admin_user)):
+    return current_user
+
 @app.get("/crypto/{coin_id}")
 def get_crypto_price(coin_id: str, db: Session = Depends(get_db)):
     # Call CoinGecko API to get price
     url = f"https://api.coingecko.com/api/v3/simple/price?ids={coin_id}&vs_currencies=usd"
     response = requests.get(url)
-    
-    # If API call is successful
-    if response.status_code == 200:
-        price_data = response.json()
-        price_usd = price_data[coin_id]['usd']
-        
-        # Save price to database
-        crud.save_price(db, coin_id, price_usd)
-        
-        # Return price information
-        return {"coin_id": coin_id, "price_usd": price_usd}
-    else:
-        # If cryptocurrency not found, return 404 error
-        raise HTTPException(status_code=404, detail="Cryptocurrency not found")
+    if response.status_code != 200:
+        raise HTTPException(status_code=404, detail="Coin not found")
+    price = response.json().get(coin_id, {}).get('usd')
+    if price is None:
+        raise HTTPException(status_code=404, detail="Price not found")
+    return {"coin_id": coin_id, "price": price}
 
 # Add Cryptocurrency to Portfolio
 # @app.post("/portfolio/")

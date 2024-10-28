@@ -1,17 +1,22 @@
-# app/schemas.py
-from pydantic import BaseModel
+# server/schemas.py
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 from datetime import datetime
 
-class UserBase(BaseModel):
-    email: str
-    username: Optional[str] = None
-
-class UserCreate(UserBase):
+class UserCreate(BaseModel):
+    email: EmailStr
     password: str
+    username: Optional[str] = ""
+    role: Optional[str] = "user"  # Add role field with a default value
 
-class UserOut(UserBase):
+class UserUpdate(BaseModel):
+    email: Optional[EmailStr] = None
+    username: Optional[str] = None
+    role: Optional[str] = None  # Add role field
+
+class UserOut(BaseModel):
     uid: int
+    role: str  # Add role field
     time_registered: Optional[datetime]
 
     class Config:
@@ -20,6 +25,13 @@ class UserOut(UserBase):
         json_encoders = {
             datetime: lambda v: v.isoformat()
         }
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    email: Optional[str] = None
 
 class PortfolioCreate(BaseModel):
     uid: int
