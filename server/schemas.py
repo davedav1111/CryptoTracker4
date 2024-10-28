@@ -36,6 +36,9 @@ class TokenData(BaseModel):
 class PortfolioCreate(BaseModel):
     uid: int
     cid: str
+    amount: float = 0.0
+    
+class PortfolioUpdate(BaseModel):
     amount: float
     
 class PortfolioOut(PortfolioCreate):
@@ -51,11 +54,60 @@ class PortfolioOut(PortfolioCreate):
 class AlertCreate(BaseModel):
     uid: int
     cid: str
-    price_target: float
+    price_target: Optional[float] = 0.0
+    threshold_percentage: Optional[float] = 0.0
 
 class AlertOut(AlertCreate):    
     aid: int
     time_created: datetime
+
+    class Config:
+        from_attributes = True
+        json_encoders = {
+            datetime: lambda v: v.isoformat()
+        }
+        
+class WalletCreate(BaseModel):
+    uid: int
+    wname: Optional[str] = None
+    address: str
+    time_added: datetime
+    time_accessed: Optional[datetime] = None
+
+class WalletUpdate(BaseModel):
+    wname: Optional[str] = None
+    time_accessed: Optional[datetime] = None
+
+class WalletOut(WalletCreate):
+    wid: int
+    address: str
+    time_created: datetime
+
+    class Config:
+        from_attributes = True
+        json_encoders = {
+            datetime: lambda v: v.isoformat()
+        }
+
+class TransactionCreate(BaseModel):
+    uid: int
+    wid: int
+    cid: str
+    cid_target: str
+    ex_rate: float
+    position: str
+    network: str
+    gas_fee: Optional[float] = 0.0
+    success: bool = False
+    time_transaction: datetime
+    
+class TransactionUpdate(BaseModel):
+    success: bool
+    time_transaction: datetime
+
+class TransactionOut(TransactionCreate):
+    tid: int
+    time_transaction: datetime
 
     class Config:
         from_attributes = True

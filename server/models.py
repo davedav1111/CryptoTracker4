@@ -86,7 +86,8 @@ class PriceAlertSubscription(Base):
     
     pasid = Column(Integer, primary_key=True, index=True)
     asid = Column(Integer, index=True)
-    threshold = Column(String)
+    threshold = Column(String)  # existing absolute price threshold
+    threshold_percentage = Column(String)  # New field for percentage threshold
 
 class Transaction(Base):
     __tablename__ = "transaction"
