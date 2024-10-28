@@ -1,5 +1,7 @@
+# server/init_db.py
 import os
-from database import Base, engine
+from database import engine
+from models import Base
 
 # Check if the environment variable DROP_ALL_TABLES is set to "true"
 overwrite_tables = os.getenv("OVERWRITE_TABLES", "false").lower() == "true"

@@ -1,15 +1,18 @@
 # server/models.py
 from sqlalchemy import Column, Index, Integer, String, Boolean, TIMESTAMP
-from .database import Base
 from sqlalchemy import Index
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
 
 class User(Base):
     __tablename__ = "users"
     
     uid = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
-    password = Column(String)
     username = Column(String, unique=True, index=True)
+    hashed_password = Column(String)
+    role = Column(String, default="user")  # Add a role field with a default value
     access_token = Column(String, nullable=True)
     deactivated = Column(Boolean, default=False)
     time_registered = Column(TIMESTAMP)
