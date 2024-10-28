@@ -7,7 +7,7 @@ Your application will be available at <http://localhost:8000>.
 
 API documentation will be available at <http://localhost:8000/docs#/>.
 
-### .env file is necessary for docker container initialization!
+### .env file is required for docker container initialization
 
 create .env in root directory with the following variables:
 ```
@@ -15,6 +15,7 @@ OVERWRITE_TABLES=false
 SQLALCHEMY_DATABASE_URL=sqlite:///./server/crypto.db
 ```
 ### Deploying your application to the cloud
+
 
 First, build your image, e.g.: `docker build -t myapp .`.
 If your cloud uses a different CPU architecture than your development
