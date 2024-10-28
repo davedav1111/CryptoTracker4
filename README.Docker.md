@@ -1,11 +1,13 @@
-# Building and running your application
+### Building and running your application
 
 When you're ready, start your application by running:
 `docker compose up --build`.
 
 Your application will be available at <http://localhost:8000>.
 
-## Deploying your application to the cloud
+### .env file necessary for docker container initialization!
+
+### Deploying your application to the cloud
 
 First, build your image, e.g.: `docker build -t myapp .`.
 If your cloud uses a different CPU architecture than your development
