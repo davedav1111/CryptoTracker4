@@ -7,16 +7,20 @@
 # You can add other services your application may depend on here, such as a
 # database or a cache. For examples, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
+
 services:
   web:
     build: .
     ports:
-      - "8000:80"
+      - "8000:8000"
     volumes:
       - ./server:/cryptotracker4/server
       - ./web:/cryptotracker4/web
     environment:
-      - SQLALCHEMY_DATABASE_URL=sqlite:///./server/crypto.db
+      - OVERWRITE_TABLES=${OVERWRITE_TABLES}
+      - SQLALCHEMY_DATABASE_URL=${SQLALCHEMY_DATABASE_URL}
+    command: >
+      sh -c "python server/init_db.py && gunicorn server.main:app --workers 4 --bind 0.0.0.0:8000 --worker-class uvicorn.workers.UvicornWorker"
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to

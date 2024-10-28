@@ -1,13 +1,21 @@
-# Building and running your application
+### Building and running your application
 
 When you're ready, start your application by running:
 `docker compose up --build`.
 
 Your application will be available at <http://localhost:8000>.
 
-Documentation for API will be available at <http://localhost:8000/docs>.
+API documentation will be available at <http://localhost:8000/docs#/>.
 
-## Deploying your application to the cloud
+### .env file is required for docker container initialization
+
+create .env in root directory with the following variables:
+```
+OVERWRITE_TABLES=false
+SQLALCHEMY_DATABASE_URL=sqlite:///./server/crypto.db
+```
+### Deploying your application to the cloud
+
 
 First, build your image, e.g.: `docker build -t myapp .`.
 If your cloud uses a different CPU architecture than your development
