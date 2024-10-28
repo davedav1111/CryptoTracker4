@@ -7,7 +7,7 @@ Your application will be available at <http://localhost:8000>.
 
 API documentation will be available at <http://localhost:8000/docs#/>.
 
-### .env file necessary for docker container initialization!
+### .env file is necessary for docker container initialization!
 
 create .env in root directory with the following variables:
 ```
