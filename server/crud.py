@@ -201,6 +201,7 @@ def create_transaction(db: Session, transaction: schemas.TransactionCreate):
     db.commit()
     db.refresh(db_transaction)
 
+    # TODO: Implement transaction status update logic
     # Update the portfolio and wallet balances if the transaction was successful
     if transaction.success:
         # Update the portfolio balance

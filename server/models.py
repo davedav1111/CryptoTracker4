@@ -11,7 +11,7 @@ class User(Base):
     uid = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
     username = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
+    hashed_password = Column(String) # SHA256 hashed password
     role = Column(String, default="user")  # Add a role field with a default value
     access_token = Column(String, nullable=True)
     deactivated = Column(Boolean, default=False)
@@ -20,7 +20,7 @@ class User(Base):
 
 class AlertSubscription(Base):
     __tablename__ = "alert_subscription"
-    
+
     asid = Column(Integer, primary_key=True, index=True)
     uid = Column(Integer, index=True)
     cid = Column(String, index=True)
@@ -44,6 +44,7 @@ class Cryptocurrency(Base):
     atl_date = Column(TIMESTAMP, nullable=True)
     last_updated = Column(TIMESTAMP, nullable=True)
 
+# Message Log
 class Message(Base):
     __tablename__ = "message"
     
