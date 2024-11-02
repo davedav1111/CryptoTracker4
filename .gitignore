@@ -71,3 +71,4 @@ venv.bak/
 dmypy.json
 .pyre/
 *.db
+/.vs

@@ -95,12 +95,12 @@ def get_user_portfolio(uid: int, db: Session = Depends(get_db)):
 
 #TODO: Fix the following routes. Celery MQ
 
-# @app.post("/alerts/", response_model=schemas.AlertOut)
-# def create_price_alert(alert: schemas.AlertCreate, db: Session = Depends(get_db)):
-#     """
-#     Create a new price alert for a user.
-#     """
-#     return crud.create_alert_subscription(db=db, alert=alert)
+@app.post("/alerts/", response_model=schemas.AlertOut)
+def create_price_alert(alert: schemas.AlertCreate, db: Session = Depends(get_db)):
+    """
+    Create a new price alert for a user.
+    """
+    return crud.create_alert_subscription(db=db, alert=alert)
 
 # @app.get("/alerts/{uid}")
 # def get_user_alerts(uid: int, db: Session = Depends(get_db)):
@@ -111,6 +111,24 @@ def get_user_portfolio(uid: int, db: Session = Depends(get_db)):
 #     if not alerts:
 #         raise HTTPException(status_code=404, detail="No alerts found for this user")
 #     return alerts
+
+#scheduler = BackgroundScheduler()
+
+# def check_price_alerts():
+#     """
+#     Function to check for price alerts in the background.
+#     """
+#     db = SessionLocal()
+#     try:
+#         crud.check_price_targets(db)
+#     finally:
+#         db.close()
+
+# # Add the job to the scheduler to run every 5 minutes
+# scheduler.add_job(check_price_alerts, "interval", minutes=5)
+# scheduler.start()
+
+# Ensure scheduler stops when app shuts down
 
 # ---- Wallet Routes ----
 
