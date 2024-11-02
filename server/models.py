@@ -100,7 +100,6 @@ class Transaction(Base):
     ex_rate = Column(String)
     position = Column(String)
     network = Column(String)
-    gas_fee = Column(String)
     success = Column(Boolean)
     time_transaction = Column(TIMESTAMP)
 

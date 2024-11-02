@@ -97,7 +97,6 @@ class TransactionCreate(BaseModel):
     ex_rate: float
     position: str
     network: str
-    gas_fee: Optional[float] = 0.0
     success: bool = False
     time_transaction: datetime
     

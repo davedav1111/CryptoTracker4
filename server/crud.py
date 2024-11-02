@@ -194,7 +194,6 @@ def create_transaction(db: Session, transaction: schemas.TransactionCreate):
         ex_rate=transaction.ex_rate,
         position=transaction.position,
         network=transaction.network,
-        gas_fee=transaction.gas_fee,
         success=transaction.success,
         time_transaction=datetime.now(timezone.utc)
     )

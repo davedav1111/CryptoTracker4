@@ -93,7 +93,7 @@ def get_user_portfolio(uid: int, db: Session = Depends(get_db)):
 
 # ---- Price Alert Routes ----
 
-#TODO: Fix the following routes
+#TODO: Fix the following routes. Celery MQ
 
 # @app.post("/alerts/", response_model=schemas.AlertOut)
 # def create_price_alert(alert: schemas.AlertCreate, db: Session = Depends(get_db)):
@@ -130,6 +130,13 @@ def get_user_wallets(uid: int, db: Session = Depends(get_db)):
     if not wallets:
         raise HTTPException(status_code=404, detail="No wallets found for this user")
     return wallets
+
+# @app.post("/wallet/{wid}")
+# def update_wallet(wid: int, amount: float, db: Session = Depends(get_db)):
+#     """
+#     Update a wallet.
+#     """
+#     return crud.update_wallet(db=db, wid=wid, )
 
 # ---- Transaction Routes ----
 
