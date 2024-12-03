@@ -14,21 +14,56 @@ class UserUpdate(BaseModel):
     username: Optional[str] = None
     role: Optional[str] = None  # Add role field
 
+# class UserOut(BaseModel):
+#     uid: int
+#     role: str  # Add role field
+#     time_registered: Optional[datetime]
+
+#     class Config:
+#         from_attributes = True
+#         # 自动将 datetime 转换为字符串格式
+#         json_encoders = {
+#             datetime: lambda v: v.isoformat()
+
+#         }
 class UserOut(BaseModel):
     uid: int
-    role: str  # Add role field
+    email: EmailStr
+    username: Optional[str]
+    role: str
     time_registered: Optional[datetime]
 
     class Config:
-        from_attributes = True
-        # 自动将 datetime 转换为字符串格式
+        orm_mode = True  # 允许从 ORM 对象中读取字段
         json_encoders = {
-            datetime: lambda v: v.isoformat()
+            datetime: lambda v: v.isoformat()  # 将 datetime 转换为 ISO 格式字符串
         }
+
+
+
+class PriceOut(BaseModel):
+    pid: int
+    cid: str
+    current_price: str
+    market_cap: Optional[int]
+    market_cap_rank: Optional[int]
+    total_volume: Optional[int]
+    high_24h: Optional[str]
+    low_24h: Optional[str]
+    price_change_24h: Optional[str]
+    price_change_percentage_24h: Optional[str]
+    market_cap_change_24h: Optional[int]
+    time_stamp: datetime
+
+    class Config:
+        orm_mode = True  # 允许 Pydantic 从 ORM 对象中读取数据
+
+
 
 class Token(BaseModel):
     access_token: str
     token_type: str
+
 
 class TokenData(BaseModel):
     email: Optional[str] = None
@@ -97,7 +132,6 @@ class TransactionCreate(BaseModel):
     ex_rate: float
     position: str
     network: str
-    gas_fee: Optional[float] = 0.0
     success: bool = False
     time_transaction: datetime
     

@@ -1,0 +1,58 @@
+# environment.yml
+
+name: dev
+channels:
+  - conda-forge
+  - defaults
+  - https://repo.anaconda.com/pkgs/main
+  - https://repo.anaconda.com/pkgs/r
+  - https://repo.anaconda.com/pkgs/msys2
+dependencies:
+  - python=3.12.7
+  - pip
+  - setuptools
+  - wheel
+  - uvicorn
+  - openssl
+  - zlib
+  - xz
+  - tk
+  - sqlite
+  - libffi
+  - libmpdec
+  - bzip2
+  - ca-certificates
+  - gunicorn
+  - pip:
+      - python-multipart
+      - annotated-types==0.7.0
+      - anyio==4.6.2.post1
+      - argon2-cffi==23.1.0
+      - argon2-cffi-bindings==21.2.0
+      - certifi==2024.8.30
+      - cffi==1.17.1
+      - charset-normalizer==3.4.0
+      - dnspython==2.7.0
+      - ecdsa==0.19.0
+      - email-validator==2.2.0
+      - faker==33.1.0
+      - fastapi==0.115.5
+      - idna==3.10
+      - packaging==24.2
+      - pip-review==1.3.0
+      - pyasn1==0.6.1
+      - pycparser==2.22
+      - pydantic==2.10.2
+      - pydantic-core==2.27.1
+      - python-dateutil==2.9.0.post0
+      - python-jose==3.3.0
+      - requests==2.32.3
+      - rsa==4.9
+      - six==1.16.0
+      - sniffio==1.3.1
+      - streamlit
+      - sqlalchemy==2.0.36
+      - starlette==0.41.3
+      - typing-extensions==4.12.2
+      - urllib3==2.2.3
+prefix: C:\Users\nitro\anaconda3\envs\dev

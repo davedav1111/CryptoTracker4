@@ -5,18 +5,20 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
+
 class User(Base):
     __tablename__ = "users"
-    
+
     uid = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
-    role = Column(String, default="user")  # Add a role field with a default value
+    role = Column(String, default="user")
     access_token = Column(String, nullable=True)
     deactivated = Column(Boolean, default=False)
     time_registered = Column(TIMESTAMP)
     time_last_active = Column(TIMESTAMP)
+
 
 class AlertSubscription(Base):
     __tablename__ = "alert_subscription"
@@ -100,7 +102,6 @@ class Transaction(Base):
     ex_rate = Column(String)
     position = Column(String)
     network = Column(String)
-    gas_fee = Column(String)
     success = Column(Boolean)
     time_transaction = Column(TIMESTAMP)
 

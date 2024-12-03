@@ -5,6 +5,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from .database import get_db
 import requests
 from datetime import timedelta
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 # Instantiate FastAPI
 app = FastAPI()
@@ -54,20 +55,78 @@ def read_admin_data(current_user: schemas.UserOut = Depends(auth.get_current_adm
     """
     return current_user
 
+# @app.get("/crypto/{coin_id}")
+# def get_crypto_price(coin_id: str, db: Session = Depends(get_db)):
+#     """
+#     Authenticate the user and return an access token.
+#     """
+#     # Call CoinGecko API to get price
+#     url = f"https://api.coingecko.com/api/v3/simple/price?ids={coin_id}&vs_currencies=usd"
+#     response = requests.get(url)
+#     if response.status_code != 200:
+#         raise HTTPException(status_code=404, detail="Coin not found")
+#     price = response.json().get(coin_id, {}).get('usd')
+#     if price is None:
+#         raise HTTPException(status_code=404, detail="Price not found")
+#     return {"coin_id": coin_id, "price": price}
+
+
+
+from requests.exceptions import Timeout, RequestException
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10))
+def fetch_crypto_data(coin_id: str):
+    """
+    从 CoinGecko API 获取加密货币数据，带有重试机制和错误处理。
+    """
+    url = f"https://api.coingecko.com/api/v3/coins/{coin_id}"
+    try:
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()  # 如果返回错误的 HTTP 状态码则抛出异常
+        return response.json()
+    except Timeout:
+        raise HTTPException(
+            status_code=504,
+            detail=f"Request to CoinGecko timed out for coin_id: {coin_id}",
+        )
+    except RequestException as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to fetch data from CoinGecko for coin_id {coin_id}: {str(e)}",
+        )
+
+
+import logging
+
+# 初始化日志器
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 @app.get("/crypto/{coin_id}")
 def get_crypto_price(coin_id: str, db: Session = Depends(get_db)):
     """
-    Authenticate the user and return an access token.
+    获取指定加密货币的详细价格信息，包括当前价格、市值、市值排名、24小时交易量等。
     """
-    # Call CoinGecko API to get price
-    url = f"https://api.coingecko.com/api/v3/simple/price?ids={coin_id}&vs_currencies=usd"
-    response = requests.get(url)
-    if response.status_code != 200:
-        raise HTTPException(status_code=404, detail="Coin not found")
-    price = response.json().get(coin_id, {}).get('usd')
-    if price is None:
-        raise HTTPException(status_code=404, detail="Price not found")
-    return {"coin_id": coin_id, "price": price}
+    logger.info(f"Fetching data for coin_id: {coin_id}")
+    try:
+        data = fetch_crypto_data(coin_id)
+        logger.info(f"Successfully fetched data for coin_id: {coin_id}")
+    except HTTPException as e:
+        logger.error(f"Error fetching data for coin_id {coin_id}: {e.detail}")
+        raise
+    market_data = data.get("market_data", {})
+    price_info = {
+        "coin_id": coin_id,
+        "current_price": market_data.get("current_price", {}).get("usd"),
+        "market_cap": market_data.get("market_cap", {}).get("usd"),
+        "market_cap_rank": data.get("market_cap_rank"),
+        "total_volume": market_data.get("total_volume", {}).get("usd"),
+        "high_24h": market_data.get("high_24h", {}).get("usd"),
+        "low_24h": market_data.get("low_24h", {}).get("usd"),
+    }
+    return price_info
+
+
 
 # ---- Portfolio Routes ----
 
