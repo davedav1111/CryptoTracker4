@@ -18,9 +18,13 @@ services:
       - ./web:/cryptotracker4/web
       - ./tests:/cryptotracker4/tests
     environment:
-      - OVERWRITE_TABLES=${OVERWRITE_TABLES}
-      - SQLALCHEMY_DATABASE_URL=${SQLALCHEMY_DATABASE_URL}
+      - OVERWRITE_TABLES=${OVERWRITE_TABLES:-false}
+      - SQLALCHEMY_DATABASE_URL=${SQLALCHEMY_DATABASE_URL:-sqlite:///./server/crypto.db}
       - SECRET_KEY=${SECRET_KEY}
       - API_KEY=${API_KEY}
+      - PYTHONPATH=/cryptotracker4
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
     command: >
-      sh -c "python server/init_db.py && gunicorn server.main:app --workers 4 --bind 0.0.0.0:8000 --worker-class uvicorn.workers.UvicornWorker"
+      sh -c "conda run --no-capture-output -n dev python server/init_db.py && 
+             conda run --no-capture-output -n dev gunicorn server.main:app --workers 4 --bind 0.0.0.0:8000 --worker-class uvicorn.workers.UvicornWorker"

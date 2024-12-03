@@ -5,22 +5,24 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
+
 class User(Base):
     __tablename__ = "users"
-    
+
     uid = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
     username = Column(String, unique=True, index=True)
-    hashed_password = Column(String) # SHA256 hashed password
-    role = Column(String, default="user")  # Add a role field with a default value
+    hashed_password = Column(String)
+    role = Column(String, default="user")
     access_token = Column(String, nullable=True)
     deactivated = Column(Boolean, default=False)
     time_registered = Column(TIMESTAMP)
     time_last_active = Column(TIMESTAMP)
 
+
 class AlertSubscription(Base):
     __tablename__ = "alert_subscription"
-
+    
     asid = Column(Integer, primary_key=True, index=True)
     uid = Column(Integer, index=True)
     cid = Column(String, index=True)
@@ -44,7 +46,6 @@ class Cryptocurrency(Base):
     atl_date = Column(TIMESTAMP, nullable=True)
     last_updated = Column(TIMESTAMP, nullable=True)
 
-# Message Log
 class Message(Base):
     __tablename__ = "message"
     

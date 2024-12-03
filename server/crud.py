@@ -176,6 +176,12 @@ def get_all_cryptocurrencies(db: Session):
     """
     return db.query(models.Cryptocurrency).all()
 
+def get_price_by_cid(db: Session, cid: str):
+    """
+    根据加密货币的 cid 查询价格数据。
+    """
+    return db.query(models.Price).filter(models.Price.cid == cid).first()
+
 # ---- Transaction Management Functions ----
 
 def create_transaction(db: Session, transaction: schemas.TransactionCreate):
@@ -194,6 +200,7 @@ def create_transaction(db: Session, transaction: schemas.TransactionCreate):
         ex_rate=transaction.ex_rate,
         position=transaction.position,
         network=transaction.network,
+        gas_fee=transaction.gas_fee,
         success=transaction.success,
         time_transaction=datetime.now(timezone.utc)
     )
@@ -201,7 +208,6 @@ def create_transaction(db: Session, transaction: schemas.TransactionCreate):
     db.commit()
     db.refresh(db_transaction)
 
-    # TODO: Implement transaction status update logic
     # Update the portfolio and wallet balances if the transaction was successful
     if transaction.success:
         # Update the portfolio balance
